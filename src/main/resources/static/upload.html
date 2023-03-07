@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+
+<div style="margin: 0 auto; width: 600px; padding: 10px; border: 1px dashed #666;">
+  <h2>Photo Upload</h2>
+  <pre id="list-files"></pre>
+  <input id="file" type="file" name="file" />
+  <button id="upload-button" onclick="uploadFile()"> Upload </button>
+  <div id="message"></div>
+</div>
+
+<script>
+
+  async function listFiles() {
+     await fetch('http://localhost:8080/fileupload')
+             .then(result =>    result.json())
+             .then(x => {
+                  console.log('files: ', x);
+                  document.querySelector("#list-files").innerHTML = JSON.stringify(x);
+             });
+  }
+  async function uploadFile() {
+    let formData = new FormData();
+    formData.append("file", file.files[0]);
+    console.log('formdata: ', formData);
+    await fetch('http://localhost:8080/fileupload', {
+      method: "POST",
+      body: formData
+    }).then(result =>    result.text())
+            .then(text => {
+              document.querySelector("#message").innerHTML = text;
+              listFiles();
+            });
+  }
+</script>
+</body>
+</html>
